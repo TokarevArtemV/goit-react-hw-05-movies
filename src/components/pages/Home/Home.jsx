@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import MovieList from 'components/MovieList';
+import MovieList from 'components/MovieList/MovieList';
 import {
   getConfigurationDetails,
   getMovies,
 } from 'components/service/movie-service';
-import { Text } from 'components/Text';
+import { Text } from 'components/Text/Text.styled';
 
-const Home = ({ configDetails }) => {
+const Home = () => {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(null);
+  const [configDetails, setConfigDetails] = useState(null);
+
+  useEffect(() => {
+    if (configDetails !== null) return;
+
+    getConfigurationDetails()
+      .then(response => setConfigDetails(response))
+      .catch(err => console.log(err.message));
+  });
 
   useEffect(() => {
     if (configDetails === null) return;

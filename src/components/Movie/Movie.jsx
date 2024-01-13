@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { GridItem, Image } from './Grid/Grid.styled';
-import { Text } from './Text';
+import { GridItem, Image } from '../Grid/Grid.styled';
+import { Text } from '../Text/Text.styled';
 
 const Movie = ({ movie, configDetails }) => {
   const baseUrl = configDetails.images.base_url;
