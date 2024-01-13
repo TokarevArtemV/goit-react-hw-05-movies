@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CastItem, Container } from './Cast.styled';
+import { CastItem, CastContainer } from './Cast.styled';
 import {
   getCastsById,
   getConfigurationDetails,
@@ -30,7 +30,7 @@ const Cast = () => {
   return (
     <>
       {casts.length > 0 && configDetails && (
-        <Container>
+        <CastContainer>
           {casts.map((cast, i) => {
             return (
               <CastItem key={i}>
@@ -47,7 +47,7 @@ const Cast = () => {
               </CastItem>
             );
           })}
-        </Container>
+        </CastContainer>
       )}
       {error && <p className="textEmpty">Sorry. {error} 😭</p>}
     </>

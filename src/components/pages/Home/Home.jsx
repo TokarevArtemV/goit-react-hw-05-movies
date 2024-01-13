@@ -5,6 +5,7 @@ import {
   getMovies,
 } from 'components/service/movie-service';
 import { Text } from 'components/Text/Text.styled';
+import { HomeContainer } from './Home.styled';
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -16,7 +17,7 @@ const Home = () => {
 
     getConfigurationDetails()
       .then(response => setConfigDetails(response))
-      .catch(err => console.log(err.message));
+      .catch(err => setError(err.message));
   });
 
   useEffect(() => {
@@ -28,13 +29,13 @@ const Home = () => {
   }, [configDetails]);
 
   return (
-    <>
+    <HomeContainer>
       <h1>Trending today</h1>
       {movies.length > 0 && (
         <MovieList movies={movies} configDetails={configDetails} />
       )}
       {error && <Text textAlign="center">Sorry. {error} 😭</Text>}
-    </>
+    </HomeContainer>
   );
 };
 
