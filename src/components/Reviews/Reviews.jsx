@@ -5,7 +5,7 @@ import { ReviewsContainer, ReviewsItem } from './Reviews.styled';
 
 const Reviews = () => {
   const { movieId } = useParams(null);
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -17,7 +17,10 @@ const Reviews = () => {
   return (
     <>
       <ReviewsContainer>
-        {reviews.map((review, i) => {
+        {reviews?.length === 0 && (
+          <p>We don`t have any reviews for this movie 😔</p>
+        )}
+        {reviews?.map((review, i) => {
           return (
             <ReviewsItem key={i}>
               <h3>{`Author: ${review.author}`}</h3>
@@ -26,7 +29,8 @@ const Reviews = () => {
           );
         })}
       </ReviewsContainer>
-      {error && <p className="textEmpty">Sorry. {error} 😭</p>}
+
+      {error && <p>Sorry. {error} 😭</p>}
     </>
   );
 };

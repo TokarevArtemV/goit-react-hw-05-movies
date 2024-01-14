@@ -1,22 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
-import {
-  MovieInfo,
-  MovieTextContainer,
-  Poster,
-} from 'components/pages/MovieDetails/MovieDetails.styled';
+import { Suspense, useEffect, useRef, useState } from 'react';
+import { Outlet, useLocation, useParams } from 'react-router-dom';
 import {
   getConfigurationDetails,
   getMoviesById,
 } from 'components/service/movie-service';
-import Genres from 'components/Genres/Genres';
 import { AddInfo } from 'components/AddInfo/AddInfo';
+import { ButtonListMovie } from 'components/MovieList/MovieList.styled';
+import MovieDatailsContent from './MovieDatailsContent';
+import { Loader } from 'components/Loader/Loader';
 
 const MovieDetails = () => {
   const { movieId } = useParams(null);
   const [movie, setMovie] = useState(null);
   const [error, setError] = useState(null);
   const [configDetails, setConfigDetails] = useState();
+  const location = useLocation();
+  const backLink = useRef(location.state?.from ?? '/');
 
   useEffect(() => {
     getConfigurationDetails()
@@ -36,28 +35,18 @@ const MovieDetails = () => {
 
   return (
     <>
-      <MovieInfo>
-        {movie && configDetails && (
-          <Poster
-            src={`${configDetails.images.base_url}/${configDetails.images.logo_sizes[2]}/${movie.poster_path}`}
-            alt={movie.title}
-          />
-        )}
-        <MovieTextContainer>
-          {movie && configDetails && <h2> {movie.original_title}</h2>}
-          {movie && configDetails && (
-            <p>User score: {Math.round(Number(movie.vote_average) * 10)}%</p>
-          )}
-          <h3>Overview</h3>
-          {movie && configDetails && <p>{movie.overview}</p>}
-          <h3>Genres</h3>
-          {movie && configDetails && <Genres genresArr={movie.genres} />}
-        </MovieTextContainer>
-        {error && <p className="textEmpty">Sorry. {error} 😭</p>}
-      </MovieInfo>
-
+      <ButtonListMovie to={backLink.current}>Go back</ButtonListMovie>
+      {movie && configDetails && (
+        <MovieDatailsContent
+          movie={movie}
+          configDetails={configDetails}
+          error={error}
+        />
+      )}
       <AddInfo />
-      <Outlet />
+      <Suspense fallback={<Loader />}>
+        <Outlet />
+      </Suspense>
     </>
   );
 };

@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom';
 
 const Cast = () => {
   const { movieId } = useParams(null);
-  const [casts, setCasts] = useState([]);
+  const [casts, setCasts] = useState(null);
   const [error, setError] = useState(null);
   const [configDetails, setConfigDetails] = useState();
 
@@ -29,8 +29,11 @@ const Cast = () => {
 
   return (
     <>
-      {casts.length > 0 && configDetails && (
+      {casts && configDetails && (
         <CastContainer>
+          {casts.length === 0 && (
+            <p>We don`t have any casts for this movie 😔</p>
+          )}
           {casts.map((cast, i) => {
             return (
               <CastItem key={i}>
@@ -49,6 +52,7 @@ const Cast = () => {
           })}
         </CastContainer>
       )}
+
       {error && <p className="textEmpty">Sorry. {error} 😭</p>}
     </>
   );

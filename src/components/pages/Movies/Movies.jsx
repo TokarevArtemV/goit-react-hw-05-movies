@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, useEffect, useRef, useState } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { ImSearch } from 'react-icons/im';
 import {
   SearchForm,
@@ -6,40 +7,52 @@ import {
   SearchFormInput,
   Searchbar,
 } from './Movies.styled';
-import { useSearchParams } from 'react-router-dom';
 import {
   getConfigurationDetails,
   getMoviesByQuery,
 } from 'components/service/movie-service';
 import { Text } from 'components/Text/Text.styled';
-import MovieList from 'components/MovieList/MovieList';
+import { Loader } from 'components/Loader/Loader';
+
+const MovieList = lazy(() => import('components/MovieList/MovieList'));
 
 const Movies = () => {
   const inputRef = useRef();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState(null);
   const [error, setError] = useState(null);
   const [configDetails, setConfigDetails] = useState(null);
-  const moviId = searchParams.get('query') ?? '';
+  const [loading, setLoading] = useState(false);
+  const query = searchParams.get('query') ?? '';
+  const location = useLocation();
 
   useEffect(() => {
     inputRef.current.focus();
     if (configDetails !== null) return;
 
+    setLoading(true);
+
     getConfigurationDetails()
       .then(response => setConfigDetails(response))
-      .catch(err => setError(err.message));
-  });
+      .catch(err => setError(err.message))
+      .finally(setLoading(false));
+  }, [configDetails]);
 
   useEffect(() => {
-    getMoviesByQuery(moviId)
-      .then(response => setMovies(response.results))
-      .catch(err => setError(err.message));
-  }, [moviId]);
+    inputRef.current.focus();
+    setLoading(true);
 
-  // const handleChange = ({ target: { value } }) => {
-  //   setSearchParams(value !== '' ? { query: value } : {});
-  // };
+    if (query === '') {
+      setMovies(null);
+      setLoading(false);
+      return;
+    }
+
+    getMoviesByQuery(query)
+      .then(response => setMovies(response.results))
+      .catch(err => setError(err.message))
+      .finally(setLoading(false));
+  }, [query]);
 
   const onSubmit = event => {
     event.preventDefault();
@@ -52,13 +65,12 @@ const Movies = () => {
       <Searchbar>
         <SearchForm className="SearchForm" onSubmit={onSubmit}>
           <SearchFormInput
-            className="SearchForm-input"
             type="text"
             autoComplete="off"
             autoFocus
             ref={inputRef}
             name="query"
-            defaultValue={moviId}
+            defaultValue={query}
             placeholder="Search movies"
           />
           <SearchFormButton type="submit" className="SearchForm-button">
@@ -68,9 +80,15 @@ const Movies = () => {
           </SearchFormButton>
         </SearchForm>
       </Searchbar>
-      {movies.length > 0 && (
-        <MovieList movies={movies} configDetails={configDetails} />
+      {movies?.length === 0 && <p>We don`t have any movies 😔</p>}
+      {movies?.length > 0 && (
+        <MovieList
+          movies={movies}
+          configDetails={configDetails}
+          location={location}
+        />
       )}
+      {loading && <Loader />}
       {error && <Text textAlign="center">Sorry. {error} 😭</Text>}
     </>
   );

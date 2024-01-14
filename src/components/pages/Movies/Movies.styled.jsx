@@ -6,6 +6,7 @@ export const Searchbar = styled.div`
   position: sticky;
   display: flex;
   align-items: center;
+  margin-bottom: 24px;
   min-height: ${({ theme }) => theme.spacing(10)};
   padding-right: ${({ theme }) => theme.spacing(6)};
   padding-left: ${({ theme }) => theme.spacing(6)};
@@ -37,28 +38,17 @@ export const SearchFormButton = styled.button`
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   outline: none;
-`;
 
-// SearchFormButton:hover {
-//   opacity: 1;
-// }
+  &:hover {
+    opacity: 1;
+  }
+`;
 
 export const SearchFormButtonIcon = styled.svg`
   width: 24px;
   height: 24px;
   color: #0c154d;
 `;
-
-// export const SearchFormButtonLabel
-//   position: absolute;
-//   width: 1px;
-//   height: 1px;
-//   padding: 0;
-//   overflow: hidden;
-//   clip: rect(0, 0, 0, 0);
-//   white-space: nowrap;
-//   clip-path: inset(50%);
-//   border: 0;
 
 export const SearchFormInput = styled.input`
   display: inline-block;
@@ -69,9 +59,8 @@ export const SearchFormInput = styled.input`
   outline: none;
   padding-left: 4px;
   padding-right: 4px;
-`;
 
-// SearchFormInput::placeholder {
-//   font: inherit;
-//   font-size: 18px;
-// }
+  &::placeholder {
+    font: inherit;
+  }
+`;

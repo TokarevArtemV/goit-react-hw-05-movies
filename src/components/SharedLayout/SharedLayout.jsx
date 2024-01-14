@@ -1,15 +1,16 @@
+import React, { Suspense } from 'react';
+import { Outlet } from 'react-router-dom';
 import { Container } from 'components/Container/Container.styled';
 import { Header, Logo } from 'components/Header/Header.styled';
-import { StyledLink } from 'components/StyledLink/StyledLink.styled';
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { HeaderLink } from 'components/StyledLink/StyledLink.styled';
+import { Loader } from 'components/Loader/Loader';
 
 const SharedLayout = () => {
   return (
     <Container>
       <Header>
-        <StyledLink to={'/'}>Home</StyledLink>
-        <StyledLink to={'/movies'}>Movies</StyledLink>
+        <HeaderLink to={'/'}>Home</HeaderLink>
+        <HeaderLink to={'/movies'}>Movies</HeaderLink>
         <Logo>
           <span role="img" aria-label="computer icon">
             💻
@@ -17,7 +18,9 @@ const SharedLayout = () => {
           Movie Library
         </Logo>
       </Header>
-      <Outlet />
+      <Suspense fallback={<Loader />}>
+        <Outlet />
+      </Suspense>
     </Container>
   );
 };
