@@ -1,33 +1,25 @@
-import { lazy, useEffect, useRef, useState } from 'react';
+import { lazy, useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { ImSearch } from 'react-icons/im';
-import {
-  SearchForm,
-  SearchFormButton,
-  SearchFormInput,
-  Searchbar,
-} from './Movies.styled';
 import {
   getConfigurationDetails,
   getMoviesByQuery,
 } from 'components/service/movie-service';
 import { Text } from 'components/Text/Text.styled';
 import { Loader } from 'components/Loader/Loader';
+import Search from 'components/Search/Search';
 
 const MovieList = lazy(() => import('components/MovieList/MovieList'));
 
 const Movies = () => {
-  const inputRef = useRef();
-  const [searchParams, setSearchParams] = useSearchParams();
   const [movies, setMovies] = useState(null);
   const [error, setError] = useState(null);
   const [configDetails, setConfigDetails] = useState(null);
   const [loading, setLoading] = useState(false);
-  const query = searchParams.get('query') ?? '';
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') ?? '';
 
   useEffect(() => {
-    inputRef.current.focus();
     if (configDetails !== null) return;
 
     setLoading(true);
@@ -39,7 +31,6 @@ const Movies = () => {
   }, [configDetails]);
 
   useEffect(() => {
-    inputRef.current.focus();
     setLoading(true);
 
     if (query === '') {
@@ -54,32 +45,15 @@ const Movies = () => {
       .finally(setLoading(false));
   }, [query]);
 
-  const onSubmit = event => {
-    event.preventDefault();
-    const value = event.target.elements.query.value;
+  const handleSubmit = query => {
+    if (!query) return;
+    const value = query;
     setSearchParams(value !== '' ? { query: value } : {});
   };
 
   return (
     <>
-      <Searchbar>
-        <SearchForm className="SearchForm" onSubmit={onSubmit}>
-          <SearchFormInput
-            type="text"
-            autoComplete="off"
-            autoFocus
-            ref={inputRef}
-            name="query"
-            defaultValue={query}
-            placeholder="Search movies"
-          />
-          <SearchFormButton type="submit" className="SearchForm-button">
-            <ImSearch
-              style={{ width: '24px', height: '24px', color: ' #0c154d' }}
-            />
-          </SearchFormButton>
-        </SearchForm>
-      </Searchbar>
+      <Search handleSubmit={handleSubmit} />
       {movies?.length === 0 && <p>We don`t have any movies 😔</p>}
       {movies?.length > 0 && (
         <MovieList
