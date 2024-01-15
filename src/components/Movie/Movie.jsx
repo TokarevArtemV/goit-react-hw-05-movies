@@ -23,7 +23,7 @@ const Movie = ({ movie, configDetails, location }) => {
         <Image
           src={
             !!movie.backdrop_path
-              ? `${baseUrl}/${fileSize}/${movie.backdrop_path}`
+              ? `${baseUrl}${fileSize}${movie.backdrop_path}`
               : defaultImg
           }
           alt={movie.title}

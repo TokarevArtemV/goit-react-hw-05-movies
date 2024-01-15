@@ -19,7 +19,9 @@ const Search = ({ handleSubmit }) => {
 
   const onSubmit = event => {
     event.preventDefault();
+
     const value = event.target.elements.query.value;
+
     handleSubmit(value);
   };
   return (

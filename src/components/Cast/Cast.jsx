@@ -5,24 +5,36 @@ import {
   getConfigurationDetails,
 } from 'components/service/movie-service';
 import { useParams } from 'react-router-dom';
+import { Loader } from 'components/Loader/Loader';
 
 const Cast = () => {
   const { movieId } = useParams(null);
   const [casts, setCasts] = useState(null);
   const [error, setError] = useState(null);
   const [configDetails, setConfigDetails] = useState();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getConfigurationDetails()
-      .then(response => setConfigDetails(response))
-      .catch(err => setError(err.message));
-  }, []);
+    if (!configDetails && movieId) {
+      setLoading(true);
+      // getConfigurationDetails використовується для отримання данних з яких складається
+      // повний шлях до зображень
+      // `${configDetails.images.base_url}${configDetails.images.logo_sizes[1]}${cast.profile_path}`
+      // https://developer.themoviedb.org/docs/image-basics
+      getConfigurationDetails()
+        .then(response => setConfigDetails(response))
+        .catch(err => setError(err.message))
+        .finally(setLoading(false));
+    }
 
-  useEffect(() => {
-    getCastsById(movieId)
-      .then(response => setCasts(response.cast))
-      .catch(err => setError(err.message));
-  }, [movieId]);
+    if (configDetails && movieId) {
+      setLoading(true);
+      getCastsById(movieId)
+        .then(response => setCasts(response.cast))
+        .catch(err => setError(err.message))
+        .finally(setLoading(false));
+    }
+  }, [configDetails, movieId]);
 
   const defaultImg =
     'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700';
@@ -52,7 +64,7 @@ const Cast = () => {
           })}
         </CastContainer>
       )}
-
+      {loading && <Loader />}
       {error && <p className="textEmpty">Sorry. {error} 😭</p>}
     </>
   );

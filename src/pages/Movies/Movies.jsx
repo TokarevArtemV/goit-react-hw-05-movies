@@ -20,33 +20,31 @@ const Movies = () => {
   const query = searchParams.get('query') ?? '';
 
   useEffect(() => {
-    if (configDetails !== null) return;
-
-    setLoading(true);
-
-    getConfigurationDetails()
-      .then(response => setConfigDetails(response))
-      .catch(err => setError(err.message))
-      .finally(setLoading(false));
-  }, [configDetails]);
-
-  useEffect(() => {
-    setLoading(true);
-
-    if (query === '') {
-      setMovies(null);
-      setLoading(false);
-      return;
+    if (query && !configDetails) {
+      setLoading(true);
+      // getConfigurationDetails використовується для отримання данних з яких складається
+      // повний шлях до зображень
+      // `${configDetails.images.base_url}${configDetails.images.logo_sizes[1]}${cast.profile_path}`
+      // https://developer.themoviedb.org/docs/image-basics
+      getConfigurationDetails()
+        .then(response => setConfigDetails(response))
+        .catch(err => setError(err.message))
+        .finally(setLoading(false));
     }
 
-    getMoviesByQuery(query)
-      .then(response => setMovies(response.results))
-      .catch(err => setError(err.message))
-      .finally(setLoading(false));
-  }, [query]);
+    if (configDetails && query && !movies) {
+      setLoading(true);
+
+      getMoviesByQuery(query)
+        .then(response => setMovies(response.results))
+        .catch(err => setError(err.message))
+        .finally(setLoading(false));
+    }
+  }, [configDetails, query, movies]);
 
   const handleSubmit = query => {
-    if (!query) return;
+    if (!query) setMovies(null);
+
     const value = query;
     setSearchParams(value !== '' ? { query: value } : {});
   };
