@@ -1,7 +1,9 @@
 import Genres from 'components/Genres/Genres';
 import { MovieInfo, MovieTextContainer, Poster } from './MovieDetails.styled';
 
-const MovieDatailsContent = ({ movie, configDetails, error }) => {
+const MovieDatailsContent = ({ movie, error }) => {
+  const baseUrl = 'http://image.tmdb.org/t/p';
+  const fileSize = '/w154';
   const defaultImg =
     'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700';
   console.log();
@@ -10,7 +12,7 @@ const MovieDatailsContent = ({ movie, configDetails, error }) => {
       <Poster
         src={
           movie.poster_path
-            ? `${configDetails.images.base_url}/${configDetails.images.logo_sizes[2]}/${movie.poster_path}`
+            ? `${baseUrl}${fileSize}${movie.poster_path}`
             : defaultImg
         }
         alt={movie.title}

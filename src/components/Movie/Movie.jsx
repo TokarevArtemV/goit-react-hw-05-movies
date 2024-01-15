@@ -3,9 +3,9 @@ import { NavLink } from 'react-router-dom';
 import { Text } from '../Text/Text.styled';
 import { GridItem, Image } from './Movie.styled';
 
-const Movie = ({ movie, configDetails, location }) => {
-  const baseUrl = configDetails.images.base_url;
-  const fileSize = configDetails.images.logo_sizes[5];
+const Movie = ({ movie, location }) => {
+  const baseUrl = 'http://image.tmdb.org/t/p';
+  const fileSize = '/w500';
   const defaultImg =
     'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700';
 
